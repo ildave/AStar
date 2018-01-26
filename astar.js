@@ -20,7 +20,75 @@ function distance(x1, y1, x2, y2) {
     return Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
 }
 
-function solveAStarPath(cells, startCell, endCell)
+function solveAStarPath(cells, startCell, endCell) {
+    console.log("astar start");
+    for (var i = 0; i < cells.length; i++) {
+            cells[i].visited = false;
+            cells[i].parent = null;
+            cells[i].globalGoal = Number.MAX_SAFE_INTEGER;
+            cells[i].localGoal = Number.MAX_SAFE_INTEGER;
+    }
+    var current = startCell;
+    current.localGoal = 0.0;
+    current.globalGoal = distance(startCell.x, startCell.y, endCell.x, endCell.y);
+    
+    var notTestedCells = Array();
+    notTestedCells.push(startCell);
+    console.log(notTestedCells);
+    
+    while (notTestedCells.length > 0 && current != endCell) {
+        console.log("loop");
+        
+        notTestedCells.sort(function(a, b) {
+            return a.globalGoal - b.globalGoal;
+        });
+        console.log(notTestedCells);
+
+        while (notTestedCells.length > 0 && notTestedCells[0].visited) {
+            notTestedCells.shift();
+        }
+
+        if (notTestedCells.length == 0) {
+            break;
+        }
+
+        current = notTestedCells[0];
+        current.visited = true;
+
+        for (var i = 0; i < current.neighbours.length; i++) {
+            var n = current.neighbours[i];
+            if (!n.visited && !n.block) {
+                notTestedCells.push(n);
+            }
+            var possiblyLowerGoal = current.localGoal + distance(current.x, current.y, n.x, n.y);
+
+            if (possiblyLowerGoal < n.localGoal) {
+                n.parent = current;
+                n.localGoal = possiblyLowerGoal;
+                n.globalGoal = n.localGoal + distance(n.x, n.y, endCell.x, endCell.y);
+            }
+        }
+    }
+    
+    console.log("astar end");
+}
+
+function drawPath(ctx, endCell) {
+    var node = endCell;
+    while (node.parent) {
+        var startX = node.x * CELL_WIDTH + CELL_HEIGHT / 2;
+        var startY = node.y * CELL_HEIGHT + CELL_HEIGHT / 2;
+        var endX = node.parent.x * CELL_WIDTH + CELL_HEIGHT / 2;
+        var endY = node.parent.y * CELL_HEIGHT + CELL_HEIGHT / 2;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth=6;
+        ctx.stroke();
+        node = node.parent;
+    }
+}
 
 function drawCells(ctx, cells) {
     for (var i = 0; i < cells.length; i++) {
@@ -35,6 +103,7 @@ function drawCells(ctx, cells) {
             ctx.moveTo(startX, startY);
             ctx.lineTo(endX, endY);
             ctx.strokeStyle = "red";
+            ctx.lineWidth = 3;
             ctx.stroke();
         }
     }
@@ -102,7 +171,9 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("ctrl click");
             cell.start = true;
             startCell = cell;
+            solveAStarPath(cells, startCell, endCell);
             drawCells(ctx, cells);
+            drawPath(ctx, endCell);
         }
         if (shift) {
             for (var i = 0; i < cells.length; i++) {
@@ -110,7 +181,10 @@ document.addEventListener("DOMContentLoaded", function() {
             }
             console.log("shift click");
             cell.end = true;
+            endCell = cell;
+            solveAStarPath(cells, startCell, endCell);
             drawCells(ctx, cells);
+            drawPath(ctx, endCell);
         }
         return false;
     });
@@ -128,8 +202,9 @@ document.addEventListener("DOMContentLoaded", function() {
         cell = cells[x * ROWS + y];
         console.log("right clicked cell", cell);
         cell.block = !cell.block;
-        endCell = cell;
-        drawCells(ctx, cells)
+        solveAStarPath(cells, startCell, endCell);
+        drawCells(ctx, cells);
+        drawPath(ctx, endCell);
         return false;
     });
 
@@ -166,6 +241,8 @@ document.addEventListener("DOMContentLoaded", function() {
     cells[250].end = true;
     endCell = cells[250];
 
+    solveAStarPath(cells, startCell, endCell);
     drawCells(ctx, cells);
+    drawPath(ctx, endCell);
 
 });
