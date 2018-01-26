@@ -91,6 +91,7 @@ function drawPath(ctx, endCell) {
 }
 
 function drawCells(ctx, cells) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (var i = 0; i < cells.length; i++) {
         var cell = cells[i];
         for (var j = 0; j < cell.neighbours.length; j++) {
@@ -102,7 +103,7 @@ function drawCells(ctx, cells) {
             ctx.beginPath();
             ctx.moveTo(startX, startY);
             ctx.lineTo(endX, endY);
-            ctx.strokeStyle = "red";
+            ctx.strokeStyle = "grey";
             ctx.lineWidth = 3;
             ctx.stroke();
         }
@@ -113,9 +114,9 @@ function drawCells(ctx, cells) {
         var y = cell.y * CELL_HEIGHT;
         x = x + BORDER;
         y = y + BORDER;
-        ctx.fillStyle = "red";
+        ctx.fillStyle = "grey";
         if (cell.block) {
-            ctx.fillStyle = "gray";
+            ctx.fillStyle = "black";
         }
         if (cell.visited) {
             ctx.fillStyle = "orange";
