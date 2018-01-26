@@ -84,7 +84,7 @@ function drawPath(ctx, endCell) {
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
         ctx.strokeStyle = "blue";
-        ctx.lineWidth=6;
+        ctx.lineWidth = 6;
         ctx.stroke();
         node = node.parent;
     }
@@ -116,6 +116,9 @@ function drawCells(ctx, cells) {
         ctx.fillStyle = "red";
         if (cell.block) {
             ctx.fillStyle = "gray";
+        }
+        if (cell.visited) {
+            ctx.fillStyle = "orange";
         }
         if (cell.start) {
             ctx.fillStyle = "yellow";
