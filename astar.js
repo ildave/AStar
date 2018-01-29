@@ -11,6 +11,10 @@ function Cell(x, y) {
     this.neighbours = Array();
 }
 
+var cells; 
+
+var CHANCE = 0.3;
+
 var ROWS = 20;
 var CELL_WIDTH = 40;
 var CELL_HEIGHT = 40;
@@ -165,6 +169,19 @@ document.addEventListener("DOMContentLoaded", function() {
 	var canvas = document.getElementById("field");
     var ctx = canvas.getContext('2d');
     console.log("load");
+    var btn = document.getElementById("generate");
+    btn.addEventListener("click", function(event) {
+        CHANCE = document.getElementById("chance").value;
+        cells = createMaze();
+        cells[0].start = true;
+        startCell= cells[0];
+        cells[250].end = true;
+        endCell = cells[250];
+    
+        solveAStarPath(cells, startCell, endCell);
+        drawCells(ctx, cells);
+        drawPath(ctx, endCell);
+    });
 
     canvas.addEventListener("click", function(event) {
         console.log(event);
@@ -225,6 +242,21 @@ document.addEventListener("DOMContentLoaded", function() {
     var startCell= null;
     var endCell = null;
 
+    cells = createMaze();
+
+    console.log(cells);
+    cells[0].start = true;
+    startCell= cells[0];
+    cells[250].end = true;
+    endCell = cells[250];
+
+    solveAStarPath(cells, startCell, endCell);
+    drawCells(ctx, cells);
+    drawPath(ctx, endCell);
+
+});
+
+function createMaze() {
     var cells = Array();
     for (var i = 0; i < ROWS; i++) {
         for (var j = 0; j < ROWS; j++) {
@@ -233,7 +265,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    var CHANCE = 0.3;
+    
     for (var x = 0; x < ROWS; x++) {
         for (var y = 0; y < ROWS; y++) {
             if (y > 0 && Math.random() < CHANCE) {
@@ -271,15 +303,5 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     }
-
-    console.log(cells);
-    cells[0].start = true;
-    startCell= cells[0];
-    cells[250].end = true;
-    endCell = cells[250];
-
-    solveAStarPath(cells, startCell, endCell);
-    drawCells(ctx, cells);
-    drawPath(ctx, endCell);
-
-});
+    return cells;
+}
