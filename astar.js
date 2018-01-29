@@ -33,7 +33,6 @@ function distance(x1, y1, x2, y2) {
 }
 
 function solveAStarPath(cells, startCell, endCell) {
-    console.log("astar start");
     for (var i = 0; i < cells.length; i++) {
             cells[i].visited = false;
             cells[i].parent = null;
@@ -46,15 +45,12 @@ function solveAStarPath(cells, startCell, endCell) {
     
     var notTestedCells = Array();
     notTestedCells.push(startCell);
-    console.log(notTestedCells);
     
     while (notTestedCells.length > 0 && current != endCell) {
-        console.log("loop");
         
         notTestedCells.sort(function(a, b) {
             return a.globalGoal - b.globalGoal;
         });
-        console.log(notTestedCells);
 
         while (notTestedCells.length > 0 && notTestedCells[0].visited) {
             notTestedCells.shift();
@@ -81,8 +77,6 @@ function solveAStarPath(cells, startCell, endCell) {
             }
         }
     }
-    
-    console.log("astar end");
 }
 
 function drawPath(ctx, endCell) {
@@ -106,8 +100,6 @@ function drawCells(ctx, cells) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (var i = 0; i < cells.length; i++) {
         var cell = cells[i];
-        console.log(cell.x, cell.y);
-        console.log(cell.neighbours.length);
         for (var j = 0; j < cell.neighbours.length; j++) {
             var n = cell.neighbours[j];
             var startX = cell.x * CELL_WIDTH + CELL_HEIGHT / 2;
@@ -168,7 +160,6 @@ document.addEventListener("keyup", function(event) {
 document.addEventListener("DOMContentLoaded", function() {
 	var canvas = document.getElementById("field");
     var ctx = canvas.getContext('2d');
-    console.log("load");
     var btn = document.getElementById("generate");
     btn.addEventListener("click", function(event) {
         CHANCE = document.getElementById("chance").value;
@@ -184,22 +175,18 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     canvas.addEventListener("click", function(event) {
-        console.log(event);
         event.preventDefault();
         var elemLeft = canvas.offsetLeft;
         var elemTop = canvas.offsetTop;
         var x = event.pageX - elemLeft;
         var y = event.pageY - elemTop;
-        console.log("click", x, y);
         x = Math.floor(x / CELL_WIDTH);
         y = Math.floor(y / CELL_HEIGHT);
         cell = cells[x * ROWS + y];
-        console.log("clicked cell", cell);
         if (ctrl) {
             for (var i = 0; i < cells.length; i++) {
                 cells[i].start = false;
             }
-            console.log("ctrl click");
             cell.start = true;
             startCell = cell;
             solveAStarPath(cells, startCell, endCell);
@@ -210,7 +197,6 @@ document.addEventListener("DOMContentLoaded", function() {
             for (var i = 0; i < cells.length; i++) {
                 cells[i].end = false;
             }
-            console.log("shift click");
             cell.end = true;
             endCell = cell;
             solveAStarPath(cells, startCell, endCell);
@@ -221,17 +207,14 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     canvas.addEventListener("contextmenu", function(event) {
-        console.log(event);
         event.preventDefault();
         var elemLeft = canvas.offsetLeft;
         var elemTop = canvas.offsetTop;
         var x = event.pageX - elemLeft;
         var y = event.pageY - elemTop;
-        console.log("click", x, y);
         x = Math.floor(x / CELL_WIDTH);
         y = Math.floor(y / CELL_HEIGHT);
         cell = cells[x * ROWS + y];
-        console.log("right clicked cell", cell);
         cell.block = !cell.block;
         solveAStarPath(cells, startCell, endCell);
         drawCells(ctx, cells);
@@ -244,7 +227,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     cells = createMaze();
 
-    console.log(cells);
     cells[0].start = true;
     startCell= cells[0];
     cells[250].end = true;
