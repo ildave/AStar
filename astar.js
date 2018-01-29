@@ -14,7 +14,15 @@ function Cell(x, y) {
 var ROWS = 20;
 var CELL_WIDTH = 40;
 var CELL_HEIGHT = 40;
-var BORDER = 4;
+var BORDER = 8;
+
+var CELL_COLOR = "DimGrey";
+var BLOCK_COLOR = "Black";
+var VISITED_COLOR = "Grey";
+var START_COLOR = "Yellow";
+var END_COLOR = "Blue";
+var PATH_COLOR = "Blue";
+var CONNECTION_COLOR = "Orange";
 
 function distance(x1, y1, x2, y2) {
     return Math.sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2));
@@ -83,8 +91,8 @@ function drawPath(ctx, endCell) {
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
-        ctx.strokeStyle = "blue";
-        ctx.lineWidth = 6;
+        ctx.strokeStyle = PATH_COLOR;
+        ctx.lineWidth = 2;
         ctx.stroke();
         node = node.parent;
     }
@@ -105,8 +113,8 @@ function drawCells(ctx, cells) {
             ctx.beginPath();
             ctx.moveTo(startX, startY);
             ctx.lineTo(endX, endY);
-            ctx.strokeStyle = "grey";
-            ctx.lineWidth = 3;
+            ctx.strokeStyle = CONNECTION_COLOR;
+            ctx.lineWidth = 6;
             ctx.stroke();
         }
     }
@@ -116,18 +124,18 @@ function drawCells(ctx, cells) {
         var y = cell.y * CELL_HEIGHT;
         x = x + BORDER;
         y = y + BORDER;
-        ctx.fillStyle = "grey";
+        ctx.fillStyle = CELL_COLOR;
         if (cell.block) {
-            ctx.fillStyle = "black";
+            ctx.fillStyle = BLOCK_COLOR;
         }
         if (cell.visited) {
-            ctx.fillStyle = "orange";
+            ctx.fillStyle = VISITED_COLOR;
         }
         if (cell.start) {
-            ctx.fillStyle = "yellow";
+            ctx.fillStyle = START_COLOR;
         }
         if (cell.end) {
-            ctx.fillStyle = "blue";
+            ctx.fillStyle = END_COLOR;
         }
         ctx.fillRect(x, y, CELL_WIDTH - (2 * BORDER), CELL_HEIGHT - (2 * BORDER));
     }
