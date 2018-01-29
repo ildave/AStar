@@ -94,6 +94,8 @@ function drawCells(ctx, cells) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     for (var i = 0; i < cells.length; i++) {
         var cell = cells[i];
+        console.log(cell.x, cell.y);
+        console.log(cell.neighbours.length);
         for (var j = 0; j < cell.neighbours.length; j++) {
             var n = cell.neighbours[j];
             var startX = cell.x * CELL_WIDTH + CELL_HEIGHT / 2;
@@ -223,23 +225,46 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
+    var CHANCE = 0.3;
     for (var x = 0; x < ROWS; x++) {
         for (var y = 0; y < ROWS; y++) {
-            if (y > 0) {
+            if (y > 0 && Math.random() < CHANCE) {
                 cells[y * ROWS + x].neighbours.push(cells[(y - 1) * ROWS + (x + 0)]);
+                cells[(y - 1) * ROWS + (x + 0)].neighbours.push(cells[y * ROWS + x]);
             }
-            if (y < ROWS - 1){
+            if (y < ROWS - 1 && Math.random() < CHANCE){
                 cells[y * ROWS + x].neighbours.push(cells[(y + 1) * ROWS + (x + 0)]);
+                cells[(y + 1) * ROWS + (x + 0)].neighbours.push(cells[y * ROWS + x]);
             }
-            if (x > 0) {
+            if (x > 0 && Math.random() < CHANCE) {
                 cells[y * ROWS + x].neighbours.push(cells[(y + 0) * ROWS + (x - 1)]);
+                cells[(y + 0) * ROWS + (x - 1)].neighbours.push(cells[y * ROWS + x]);
             }
-            if (x < ROWS - 1) {
+            if (x < ROWS - 1 && Math.random() < CHANCE) {
                 cells[y * ROWS + x].neighbours.push(cells[(y + 0) * ROWS + (x + 1)]);
+                cells[(y + 0) * ROWS + (x + 1)].neighbours.push(cells[y * ROWS + x]);
+            }
+
+            if (y > 0 && x > 0 && Math.random() < CHANCE) {
+                cells[y * ROWS + x].neighbours.push(cells[(y - 1) * ROWS + (x - 1)]);
+                cells[(y - 1) * ROWS + (x - 1)].neighbours.push(cells[y * ROWS + x]);
+            }
+            if (y < ROWS - 1 && x > 0 && Math.random() < CHANCE) {
+                cells[y * ROWS + x].neighbours.push(cells[(y + 1) * ROWS + (x - 1)]);
+                cells[(y + 1) * ROWS + (x - 1)].neighbours.push(cells[y * ROWS + x]);
+            }
+            if (y  >0 && x < ROWS - 1 && Math.random() < CHANCE) {
+                cells[y * ROWS + x].neighbours.push(cells[(y - 1) * ROWS + (x + 1)]);
+                cells[(y - 1) * ROWS + (x + 1)].neighbours.push(cells[y * ROWS + x]);
+            }
+            if (y < ROWS - 1 && x < ROWS - 1 && Math.random() < CHANCE) {
+                cells[y * ROWS + x].neighbours.push(cells[(y + 1) * ROWS + (x + 1)]);
+                cells[(y + 1) * ROWS + (x + 1)].neighbours.push(cells[y * ROWS + x]);
             }
         }
     }
 
+    console.log(cells);
     cells[0].start = true;
     startCell= cells[0];
     cells[250].end = true;
